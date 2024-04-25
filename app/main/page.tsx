@@ -3,65 +3,62 @@
 "use client";
 
 import React from 'react';
+import { useState } from 'react';
+import { SubmitHandler } from "react-hook-form";
 import Tabs from "./Tabs";
 import Mindfulness from "./Mindfulness";
 import Affirmation from "./Affirmation";
-import NameTag from "./NameTag";
 import { useCustomState } from './state';
-import { NameTagBadge, HandWaveBadge, drawEverythingToImage } from "@/lib/draw_badge_api";
-
+import { NameTagContent, NameTagForm } from "@/components/NameTagForm";
+import { HandWaveBadge, DrawBadgeApi } from "@/lib/draw_badge_api";
 import { createFromConfig, ZoomApiWrapper } from "@/lib/zoomapi";
 import { ConfigOptions }  from "@zoom/appssdk";
 
+const zoomConfigOptions: ConfigOptions = {
+  capabilities: [
+    "setVirtualForeground",
+    "removeVirtualForeground",
+  ]
+};
+const zoomApi: ZoomApiWrapper = createFromConfig(zoomConfigOptions);
+const foregroundDrawer: DrawBadgeApi = new DrawBadgeApi(zoomApi);
 
-type Apis = "setVirtualForeground" | "removeVirtualForeground"
-const apiList: Apis[] = [
-  "setVirtualForeground",
-  "removeVirtualForeground",
-];
 
 function App() {
-
+ 
   const { state, 
   setSelectedWaveHand,
   setCurrentAffirmation,
   setAllAffirmations,
-  setCurrentNameTag,
-  setNameTagStatus,} = useCustomState();
+  } = useCustomState();
   
+  //TODO: initialize nametag with stored values
+  const [nameTagContent, setNameTagContent] = useState<NameTagContent>({
+    visible:false,
+    fullName:"",
+    preferredName:"",
+    pronouns:"",
+    disclosure:"",
+  });
 
+  // TODO: refactor HandWave component to maintain the selected state there
+  //       only use the callback function to redraw when the state is changed.
   const handleWaveHandsClick = (num: number) => {
     setSelectedWaveHand(num)
-
-    const nametag: NameTagBadge = {
-        visible: state.nameTagStatus,
-        fullName: state.currentNameTag[0],
-        preferredName: state.currentNameTag[1],
-        pronouns: state.currentNameTag[2],
-        disclosure: state.currentNameTag[3],
-    };
 
     const handWave: HandWaveBadge =
        state.selectedWaveHand !== null ?
            {visible: true, waveText: state.waveHands[state.selectedWaveHand]} :
            {visible: false};
 
-    // TODO: Switch this to use DrawBadgeApi
-    const imageData = drawEverythingToImage(nametag, handWave);
-    
-    console.log(state.selectedWaveHand)
-    const configOptions: ConfigOptions = {
-      capabilities: apiList
-    };
-    const zoomApiInstance: ZoomApiWrapper = createFromConfig(configOptions);
-
-    if (imageData) {
-      zoomApiInstance.setVirtualForeground(imageData);
-    } else {
-      zoomApiInstance.removeVirtualForeground();
-    }
+    foregroundDrawer.drawHandWave(handWave);
   };
 
+  //TODO: store the new nametag content into DB
+  const updateNameTagContent: SubmitHandler<NameTagContent> = (data) => {
+    setNameTagContent(data);
+    foregroundDrawer.drawNameTag(data);
+  };
 
   return (
     <div>
@@ -94,14 +91,9 @@ function App() {
           </div>
 
           <div page-label="nametag">
-            <NameTag 
-              currentNameTag={state.currentNameTag}
-              nameTagStatus={state.nameTagStatus}
-              setCurrentNameTag={setCurrentNameTag}
-              setNameTagStatus={setNameTagStatus}
-
-              selectedWaveHand = {state.selectedWaveHand}
-              waveHands = {state.waveHands}
+            <NameTagForm
+              content={nameTagContent}
+              onNameTagContentChange={updateNameTagContent}
             />
           </div>
 
