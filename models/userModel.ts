@@ -2,12 +2,14 @@
 // Compare passwords, hash and store
 import { Model, models, model, Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
+import { NameTagContent } from "@/components/NameTagForm";
 
 interface UserDocument extends Document {
     email: string;
     name: string;
     password: string;
     role: "admin" | "user";
+    nameTag: NameTagContent;
 }
 
 interface Methods {
@@ -20,6 +22,13 @@ const userSchema = new Schema<UserDocument, {}, Methods>({
     name: { type: String, required: true, trim: true },
     password: { type: String, required: true},
     role: { type: String, enum: ["admin", "user"], default: "user" },
+    nameTag: {
+        fullName: { type: String },
+        preferredName: { type: String },
+        pronouns: { type: String },
+        disclosure: { type: String },
+        visible: { type: Boolean }
+    }
 });
 
 //Hash the password before saving

@@ -3,7 +3,7 @@
 "use client";
 
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SubmitHandler } from "react-hook-form";
 import Tabs from "./Tabs";
 import Mindfulness from "./Mindfulness";
@@ -15,6 +15,7 @@ import { AffirmationCarousel } from '@/components/AffirmationCarousel';
 import { HandWaveBadge, DrawBadgeApi } from "@/lib/draw_badge_api";
 import { createFromConfig, ZoomApiWrapper } from "@/lib/zoomapi";
 import { ConfigOptions }  from "@zoom/appssdk";
+import { fetchNametagFromDB, updateNameTagInDB } from '@/lib/nametag_db';
 
 const zoomConfigOptions: ConfigOptions = {
   capabilities: [
@@ -48,7 +49,6 @@ function App() {
   setAllAffirmations,
   } = useCustomState();
   
-  //TODO: initialize nametag with stored values
   const [nameTagContent, setNameTagContent] = useState<NameTagContent>({
     visible:false,
     fullName:"",
@@ -57,10 +57,27 @@ function App() {
     disclosure:"",
   });
 
-  //TODO: store the new nametag content into DB
+  const [nameTagIsLoaded, setNameTagIsLoaded] = useState(false);
+
+  // TODO: refactor HandWave component to maintain the selected state there
+  //       only use the callback function to redraw when the state is changed.
+  const handleWaveHandsClick = (num: number) => {
+    setSelectedWaveHand(num)
+
+    const handWave: HandWaveBadge =
+       state.selectedWaveHand !== null ?
+           {visible: true, waveText: state.waveHands[state.selectedWaveHand]} :
+           {visible: false};
+
+    foregroundDrawer.drawHandWave(handWave);
+  };
+
   const updateNameTagContent: SubmitHandler<NameTagContent> = (data) => {
     setNameTagContent(data);
     foregroundDrawer.drawNameTag(data);
+
+    // Update nametag in DB
+    updateNameTagInDB(data);
   };
 
   const updateHandWaveBadge = (badge: HandWaveBadge) => {
@@ -69,6 +86,15 @@ function App() {
 
   //TODO: query and load user saved buttons;
   const savedWaveHandButtons = defaultWaveHandButtons;
+  
+  useEffect(() => {
+    fetchNametagFromDB().then((newNameTag) => {
+      if (newNameTag !== undefined) {
+        setNameTagContent(newNameTag);
+      }
+      setNameTagIsLoaded(true);
+    });
+  }, []);
 
   return (
     <div>
@@ -94,10 +120,10 @@ function App() {
           </div>
 
           <div page-label="nametag">
-            <NameTagForm
+            {nameTagIsLoaded && <NameTagForm
               content={nameTagContent}
               onNameTagContentChange={updateNameTagContent}
-            />
+            />}
           </div>
 
           <div page-label="mindfulness">
