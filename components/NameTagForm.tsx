@@ -14,6 +14,8 @@ export interface NameTagContent {
   preferredName: string;
   pronouns: string;
   disclosure: string;
+  fullDisclosureMessage: string;
+  sendDisclosureMessage: boolean;
 }
 
 interface NameTagProps {
@@ -71,6 +73,15 @@ export function NameTagForm({
             {...register("disclosure")}
           />
         </div>
+        <div>
+          <label>Disclosure Message</label>
+          <textarea
+            className="text-input"
+            rows={6}
+            defaultValue={content.fullDisclosureMessage}
+            {...register("fullDisclosureMessage")}
+          />
+        </div>
         <div className="form-container">
           <div className="controller-container">
             <Controller
@@ -88,9 +99,26 @@ export function NameTagForm({
                 />
               )}
             />
-            </div>
-          <input type="submit" className="submit-btn" />
+          </div>
+          <div className="controller-container">
+            <Controller
+              control={control}
+              name="sendDisclosureMessage"
+              defaultValue={content.sendDisclosureMessage}
+              render={({ field: { onChange, value } }) => (
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={value} onChange={onChange} />
+                  }
+                  label="Send Disclosure Message"
+                  labelPlacement="start"
+                  className="label-styling" 
+                />
+              )}
+            />
+          </div>
         </div>
+        <input type="submit" className="submit-btn" />
       </form>
     </div>
   );
