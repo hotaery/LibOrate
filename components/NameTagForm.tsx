@@ -22,7 +22,6 @@ interface NameTagProps {
   onNameTagContentChange: SubmitHandler<NameTagContent>;
 }
 
-//TODO: beautify the form, perhaps use Switch rather than Checkbox
 export function NameTagForm({ content, onNameTagContentChange }: NameTagProps) {
   const { register, handleSubmit, control, watch } = useForm<NameTagContent>();
   const maxDisclosureLength = 30;
@@ -157,6 +156,7 @@ export function NameTagForm({ content, onNameTagContentChange }: NameTagProps) {
             Save Name Tag
           </Button>
         </div>
+        <div></div>
       </form>
     </div>
   );
