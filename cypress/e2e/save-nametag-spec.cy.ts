@@ -1,5 +1,5 @@
-describe("Logging in spec", () => {
-  it("is able to create new account and log in with it", () => {
+describe("Save nametag button", () => {
+  it("is able to save nametag and persist it across logins", () => {
     const email = "foobar@example.com";
     const password = "secret";
     cy.visit("/");
@@ -19,7 +19,21 @@ describe("Logging in spec", () => {
     cy.contains("Email").click().type(email);
     cy.contains("Password").click().type(password);
     cy.contains("Sign In").click();
-    // Sign in successful (reach name tag page)
-    cy.contains("Preferred Name");
+
+    const displayName = "Chester McAnderson III";
+    // Type in info
+    cy.contains("Preferred Name").click().type(`{selectall}${displayName}`);
+    cy.contains("Save Name Tag").click();
+
+    // Go back to homepage
+    cy.visit("/");
+    cy.contains("Email").click().type(email);
+    cy.contains("Password").click().type(password);
+    cy.contains("Sign In").click();
+
+    // Check that preferred name is still there
+    cy.contains("Preferred Name")
+      .get("input")
+      .should("have.value", displayName);
   });
 });
