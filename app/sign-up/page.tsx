@@ -2,6 +2,7 @@
 "use client";
 import React, { ChangeEventHandler, FormEventHandler, useState } from "react";
 import "../css/sign-up.css"; // Import CSS file
+import { Action, log } from "@/lib/log";
 
 const SignUp = () => {
   const [busy, setBusy] = useState(false);
@@ -25,8 +26,12 @@ const SignUp = () => {
       method: "POST",
       body: JSON.stringify(userInfo),
     })
-      .then(() => {
+      .then((res) => {
         setIsUserCreated(true);
+        log(Action.SIGN_UP, userInfo.email, res);
+      })
+      .catch((e) => {
+        log(Action.SIGN_UP_FAILURE, userInfo.email, e);
       })
       .finally(() => {
         setBusy(false);
