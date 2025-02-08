@@ -1,6 +1,7 @@
 /* Affirmation.css */
 .self-affirm-carousel {
   display: flex;
+  height: 100%;
 }
 
 .self-affirm-card {
@@ -11,13 +12,13 @@
   height: 100%;
   background: linear-gradient(#98b8cd, #cbb3e5); /* Example gradient colors */
   align-items: center;
+  overflow: hidden;
 }
 
 .self-affirm-text {
   color: #ffffff; /* White text, change if needed */
   font-size: 32px;
   text-align: center;
-  padding: 1.5rem;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -102,4 +103,21 @@
 
 .-right-12 {
   margin-right: 60px !important;
+}
+
+.resize-handle {
+  height: 2px;
+  width: 100%;
+  background: #aaa;
+  cursor: row-resize;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: background 0.2s;
+  opacity: 0;
+}
+
+.resize-handle:hover {
+  background: #888;
+  opacity: 1;
 }

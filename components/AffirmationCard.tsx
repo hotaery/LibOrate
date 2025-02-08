@@ -21,12 +21,14 @@ interface AffirmationCardProps {
   initialContent: AffirmationCardContent;
   onAffirmationCardUpdate: (id: number, updatedText: string) => void;
   onAffirmationCardDeletion: (id: number) => void;
+  fontSize?: number;
 }
 
 export function AffirmationCard({
   initialContent,
   onAffirmationCardUpdate,
   onAffirmationCardDeletion,
+  fontSize,
 }: AffirmationCardProps) {
   const [text, setText] = useState(initialContent.text);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -44,6 +46,10 @@ export function AffirmationCard({
     setText(updatedText);
     onAffirmationCardUpdate(currentId, updatedText);
   };
+
+  const fontStyle: React.CSSProperties = {
+    ...(fontSize && { fontSize: `${fontSize}px` }),
+  }
 
   return (
     <Card className="self-affirm-card">
@@ -86,7 +92,7 @@ export function AffirmationCard({
           />
         </Menu>
       </CardActions>
-      <CardContent className="self-affirm-text">{text}</CardContent>
+      <CardContent className="self-affirm-text" style={fontStyle} >{text}</CardContent>
     </Card>
   );
 }

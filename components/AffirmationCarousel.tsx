@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   AffirmationCardContent,
   AffirmationCard,
@@ -22,6 +22,10 @@ export function AffirmationCarousel({
   initialAffirmations,
 }: AffirmationCarouselProps) {
   const [affirmationList, setAffirmationList] = useState(initialAffirmations);
+  const [height, setHeight] = useState<number>(100); // Default height
+  const [fontSize, setFontSize] = useState<number>(32); // Default font size
+  const isResizing = useRef(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const updateAffirmationCard = (id: number, updatedText: string) => {
     // TODO: log updated AffirmationList in DB
@@ -52,15 +56,55 @@ export function AffirmationCarousel({
     setAffirmationList([...affirmationList, newCard]);
   };
 
+  useEffect(() => {
+    if (carouselRef.current) {
+      setHeight(carouselRef.current.clientHeight);
+      setFontSize(carouselRef.current.clientHeight * 0.2);
+    }
+  }, [])
+
+  useEffect(() => {
+    let prevY = 0;
+
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isResizing.current) {
+        const movementY = event.movementY ? event.movementY : event.clientY - prevY;
+        prevY = event.clientY;
+        const newHeight = Math.max(80, Math.min(height + movementY, 300));
+        setHeight(newHeight);
+        setFontSize(newHeight * 0.2);
+      }
+    };
+
+    const handleMouseUp = () => {
+      isResizing.current = false;
+      document.body.style.userSelect = "auto";
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [height]);
+
+  const handleMouseDown = () => {
+    isResizing.current = true;
+    document.body.style.userSelect = "none"; // Prevent text selection while dragging
+  };
+
   return (
     <Carousel>
-      <CarouselContent className="self-affirm-carousel">
+      <CarouselContent className="self-affirm-carousel" style={{ height: `${height}px` }} ref={carouselRef}>
         {affirmationList.map((affirmation) => (
           <CarouselItem key={affirmation.text}>
             <AffirmationCard
               initialContent={affirmation}
               onAffirmationCardUpdate={updateAffirmationCard}
               onAffirmationCardDeletion={deleteAffirmationCard}
+              fontSize={fontSize}
             />
           </CarouselItem>
         ))}
@@ -68,6 +112,7 @@ export function AffirmationCarousel({
           <AddNewAffirmationCard onCardAdd={addAffirmationCard} />
         </CarouselItem>
       </CarouselContent>
+      <div className="resize-handle" onMouseDown={handleMouseDown} />
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
