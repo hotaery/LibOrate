@@ -23,7 +23,6 @@ export function AffirmationCarousel({
 }: AffirmationCarouselProps) {
   const [affirmationList, setAffirmationList] = useState(initialAffirmations);
   const [height, setHeight] = useState<number>(100); // Default height
-  const [fontSize, setFontSize] = useState<number>(32); // Default font size
   const isResizing = useRef(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -59,20 +58,20 @@ export function AffirmationCarousel({
   useEffect(() => {
     if (carouselRef.current) {
       setHeight(carouselRef.current.clientHeight);
-      setFontSize(carouselRef.current.clientHeight * 0.2);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     let prevY = 0;
 
     const handleMouseMove = (event: MouseEvent) => {
       if (isResizing.current) {
-        const movementY = event.movementY ? event.movementY : event.clientY - prevY;
+        const movementY = event.movementY
+          ? event.movementY
+          : event.clientY - prevY;
         prevY = event.clientY;
         const newHeight = Math.max(80, Math.min(height + movementY, 300));
         setHeight(newHeight);
-        setFontSize(newHeight * 0.2);
       }
     };
 
@@ -97,14 +96,17 @@ export function AffirmationCarousel({
 
   return (
     <Carousel>
-      <CarouselContent className="self-affirm-carousel" style={{ height: `${height}px` }} ref={carouselRef}>
+      <CarouselContent
+        className="self-affirm-carousel"
+        style={{ height: `${height}px` }}
+        ref={carouselRef}
+      >
         {affirmationList.map((affirmation) => (
           <CarouselItem key={affirmation.text}>
             <AffirmationCard
               initialContent={affirmation}
               onAffirmationCardUpdate={updateAffirmationCard}
               onAffirmationCardDeletion={deleteAffirmationCard}
-              fontSize={fontSize}
             />
           </CarouselItem>
         ))}

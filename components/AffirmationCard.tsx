@@ -28,7 +28,6 @@ export function AffirmationCard({
   initialContent,
   onAffirmationCardUpdate,
   onAffirmationCardDeletion,
-  fontSize,
 }: AffirmationCardProps) {
   const [text, setText] = useState(initialContent.text);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -47,19 +46,16 @@ export function AffirmationCard({
     onAffirmationCardUpdate(currentId, updatedText);
   };
 
-  const fontStyle: React.CSSProperties = {
-    ...(fontSize && { fontSize: `${fontSize}px` }),
-  }
-
   return (
     <Card className="self-affirm-card">
       <CardActions
         disableSpacing
         sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "flex-start",
-          p: 0,
+          position: "absolute", // Keep button in the top-right corner
+          top: 0,
+          right: 0,
+          zIndex: 1, // Make sure it's above content so that CardContent doesn't cover it
+          p: 1,
         }}
       >
         <IconButton
@@ -92,7 +88,7 @@ export function AffirmationCard({
           />
         </Menu>
       </CardActions>
-      <CardContent className="self-affirm-text" style={fontStyle} >{text}</CardContent>
+      <CardContent className="self-affirm-text">{text}</CardContent>
     </Card>
   );
 }
