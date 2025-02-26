@@ -21,7 +21,6 @@ interface AffirmationCardProps {
   initialContent: AffirmationCardContent;
   onAffirmationCardUpdate: (id: number, updatedText: string) => void;
   onAffirmationCardDeletion: (id: number) => void;
-  fontSize?: number;
 }
 
 export function AffirmationCard({

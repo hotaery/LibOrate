@@ -3,7 +3,18 @@ import { render, fireEvent, act } from "@testing-library/react";
 import { AffirmationCarousel } from "../components/AffirmationCarousel";
 import "@testing-library/jest-dom"; // Extra matchers for assertions
 
-// 🛠 Mock embla-carousel-react to prevent errors in Jest
+// 🛠 Mock embla-carousel-react to prevent errors in Jest. The error details are as follows:
+//    https://github.com/davidjerleke/embla-carousel/issues/837
+//
+// Embla Carousel provides official mocks for testing:
+// https://github.com/davidjerleke/embla-carousel/tree/master/packages/embla-carousel/src/__tests__/mocks
+//
+// However, integrating them directly is not straightforward because:
+// - The official mocks are designed for Embla's internal testing and may not fit our test setup easily.
+// - They might require additional dependencies or setup adjustments.
+//
+// For now, we use a simpler custom mock, but if someone finds a clean way to reuse the official mocks,
+// feel free to update this!
 jest.mock("embla-carousel-react", () => ({
   __esModule: true,
   default: jest.fn(() => [
