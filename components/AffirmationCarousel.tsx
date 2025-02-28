@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   AffirmationCardContent,
   AffirmationCard,
@@ -22,9 +22,8 @@ export function AffirmationCarousel({
   initialAffirmations,
 }: AffirmationCarouselProps) {
   const [affirmationList, setAffirmationList] = useState(initialAffirmations);
-  const [height, setHeight] = useState<number>(100); // Default height
-  const isResizing = useRef(false);
   const carouselRef = useRef<HTMLDivElement>(null);
+  let isResizing = false;
 
   const updateAffirmationCard = (id: number, updatedText: string) => {
     // TODO: log updated AffirmationList in DB
@@ -55,52 +54,33 @@ export function AffirmationCarousel({
     setAffirmationList([...affirmationList, newCard]);
   };
 
-  useEffect(() => {
-    if (carouselRef.current) {
-      setHeight(carouselRef.current.clientHeight);
-    }
-  }, []);
+  function resizeCarousel(e: MouseEvent) {
+    if (!isResizing || !carouselRef.current) return;
+    document.body.style.cursor = "row-resize";
+    let newHeight = e.clientY - carouselRef.current.getBoundingClientRect().top;
+    newHeight = Math.max(80, Math.min(newHeight, 150));
+    carouselRef.current.style.height = `${newHeight}px`;
+  }
 
-  useEffect(() => {
-    let prevY = 0;
-
-    const handleMouseMove = (event: MouseEvent) => {
-      if (isResizing.current) {
-        const movementY = event.movementY
-          ? event.movementY
-          : event.clientY - prevY;
-        prevY = event.clientY;
-        const newHeight = Math.max(80, Math.min(height + movementY, 300));
-        setHeight(newHeight);
-      }
-    };
-
-    const handleMouseUp = () => {
-      isResizing.current = false;
-      document.body.style.userSelect = "auto";
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [height]);
+  function stopResizing() {
+    isResizing = false;
+    document.body.style.userSelect = "auto";
+    document.body.style.cursor = "";
+    document.removeEventListener("mousemove", resizeCarousel);
+    document.removeEventListener("mouseup", stopResizing);
+  }
 
   const handleMouseDown = () => {
-    isResizing.current = true;
+    isResizing = true;
     document.body.style.userSelect = "none"; // Prevent text selection while dragging
+    document.body.style.cursor = "row-resize";
+    document.addEventListener("mousemove", resizeCarousel);
+    document.addEventListener("mouseup", stopResizing);
   };
 
   return (
     <Carousel>
-      <CarouselContent
-        className="self-affirm-carousel"
-        style={{ height: `${height}px` }}
-        ref={carouselRef}
-      >
+      <CarouselContent className="self-affirm-carousel" ref={carouselRef}>
         {affirmationList.map((affirmation) => (
           <CarouselItem key={affirmation.text}>
             <AffirmationCard

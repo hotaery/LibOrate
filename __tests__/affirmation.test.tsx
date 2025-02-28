@@ -49,9 +49,6 @@ describe("AffirmationCarousel Component", () => {
     const resizeHandle = container.querySelector(".resize-handle"); // Ensure resize handle is present
     const carouselContent = container.querySelector(".self-affirm-carousel"); // Ensure content is present
 
-    // Ensure default height is set
-    expect(carouselContent.style.height).toBe("0px");
-
     act(() => {
       fireEvent.mouseDown(resizeHandle); // Start resizing
       fireEvent.mouseMove(document, { clientY: 100 }); // Drag down
