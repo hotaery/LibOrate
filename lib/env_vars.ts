@@ -21,8 +21,9 @@ for (const dep in deps) {
 if (hasMissing) throw new Error("Missing required .env values...exiting");
 
 try {
-  new URL(config.ZM_REDIRECT_URL);
-} catch (e) {
+  new URL(config.ZM_REDIRECT_URL!);
+} catch (err) {
+  const e = err as Error;
   throw new Error(`Invalid ZM_REDIRECT_URL: ${e.message}`);
 }
 
@@ -33,19 +34,3 @@ export const zoomApp = {
   redirectUrl: config.ZM_REDIRECT_URL,
   sessionSecret: config.SESSION_SECRET,
 };
-
-// Zoom App Info
-export const appName = config.APP_NAME || "zoom-app";
-export const redirectUri = zoomApp.redirectUrl;
-
-// HTTP
-export const port = config.PORT || "3000";
-
-// require secrets are explicitly imported
-const defaultConfig = {
-  appName,
-  redirectUri,
-  port,
-};
-
-export default defaultConfig;
