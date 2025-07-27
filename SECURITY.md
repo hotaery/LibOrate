@@ -4,18 +4,18 @@
 
 We currently support the latest stable release of this project. Security updates are provided for:
 
-| Version | Supported          |
-|---------|--------------------|
-| latest  | ✅                  |
+| Version | Supported                 |
+| ------- | ------------------------- |
+| latest  | ✅                        |
 | legacy  | ❌ (no longer maintained) |
 
 ## Reporting a Vulnerability
 
 If you discover a security vulnerability in this project, **please report it privately** via email:
 
-📧 **contact@aimpower.org**  
+📧 **contact@aimpower.org**
 
-Please do **not** create public issues for security-related matters. Our preference is that you make use of GitHub's private vulnerability reporting feature to disclose 
+Please do **not** create public issues for security-related matters. Our preference is that you make use of GitHub's private vulnerability reporting feature to disclose
 potential security vulnerabilities in our Open Source Software. To do this, please visit https://github.com/aimpowered/LibOrate/security/advisories and click the "Report a vulnerability" button.
 
 We aim to respond to all reports within **3 business days**, and to provide a fix (or planned mitigation) within **7 days** of confirmation.
