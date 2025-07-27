@@ -1,4 +1,5 @@
 # Secure Software Development Life Cycle (SSDLC)
+
 Project Name: LibOrate
 Organization: AImpower.org
 Description: A videoconferencing companion app that offers emotional and relational support during video calls.
@@ -8,13 +9,12 @@ Description: A videoconferencing companion app that offers emotional and relatio
 - Task Management:
 
   We use GitHub Issues to capture feature requests, enhancements, and bug reports.
-  
+
   Each issue includes labels (e.g., enhancement, beta-good-to-have) and acceptance criteria.
 
-- Evidence: 
+- Evidence:
 
   ![](images/issue.png)
-
 
 ## 2. Design
 
@@ -28,10 +28,12 @@ Description: A videoconferencing companion app that offers emotional and relatio
 ## 3. Implementation
 
 - Branch Strategy:
+
   - We follow GitHub Flow. main is protected.
-  All features/fixes are implemented via pull requests (PRs).
+    All features/fixes are implemented via pull requests (PRs).
 
 - Code Review:
+
   - Peer review is mandatory before merging.
   - Reviewers use GitHub's "Request Changes" or "Approve" features.
 
@@ -40,13 +42,15 @@ Description: A videoconferencing companion app that offers emotional and relatio
   - PR Review
 
     ![](images/pr_review.png)
-  
+
   - PR Approved
 
     ![](images/pr_approved.png)
 
 ## 4. Testing
+
 - Automated Tests:
+
   - We run unit tests and Cypress E2E tests on each PR and push.
   - Test results are validated in GitHub Actions.
 
@@ -55,7 +59,7 @@ Description: A videoconferencing companion app that offers emotional and relatio
   - UT and cypress E2E tests
 
     ![](images/testing.png)
-  
+
   - Run UT
 
     ![](images/npm_test.png)
@@ -65,6 +69,7 @@ Description: A videoconferencing companion app that offers emotional and relatio
     ![](images/cypress_test.png)
 
 ## 6. Security Practices
+
 - Tools Used:
   - [npm audit](https://docs.npmjs.com/cli/v10/commands/npm-audit)
   - [Snyk](https://snyk.io/)
@@ -74,9 +79,9 @@ Description: A videoconferencing companion app that offers emotional and relatio
 - Security Policy
   - SECURITY.md defines vulnerability reporting process.
 - Evidence:
-  
+
   - Security policy
-  
+
     ![](./images/security_policy.png)
 
   - Github Dependabot Alert

@@ -1,13 +1,13 @@
 # Enable Advanced Security
 
-+ Dependency graph
-    + Automatic dependency submission
-+ Dependabot 
-    + Dependabot alerts
-    + Dependabot security updates
-    + Dependabot version updates
-+ Code scanning
-    + CodeQL
+- Dependency graph
+  - Automatic dependency submission
+- Dependabot
+  - Dependabot alerts
+  - Dependabot security updates
+  - Dependabot version updates
+- Code scanning
+  - CodeQL
 
 ![](images/advanced-security_1.png)
 
@@ -16,17 +16,18 @@
 # Github Workflow
 
 ## CodeQL
+
 ```yml
 name: "LibOrate CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
-    - cron: '31 2 * * 0' # once a week On Sundays at 2:31 AM UTC
-  
+    - cron: "31 2 * * 0" # once a week On Sundays at 2:31 AM UTC
+
 permissions:
   contents: read
 
@@ -44,35 +45,35 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - language: actions
-          build-mode: none
-        - language: javascript-typescript
-          build-mode: none
+          - language: actions
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
 
-    - if: matrix.build-mode == 'manual'
-      shell: bash
-      run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
+      - if: matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo 'If you are using a "manual" build mode for one or more of the' \
+            'languages you are analyzing, replace this with the commands to build' \
+            'your code, for example:'
+          echo '  make bootstrap'
+          echo '  make release'
+          exit 1
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
-        upload: true
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+          upload: true
 ```
 
 ## Dependency Review
@@ -99,6 +100,7 @@ jobs:
 ```
 
 ## npm audit
+
 Any vulnerabilities found by npm audit will make Github Actions fail.
 
 ```yml
@@ -107,6 +109,7 @@ Any vulnerabilities found by npm audit will make Github Actions fail.
 ```
 
 ## SBOM
+
 Generate a Software Bill of Materials (SBOM) for your project.
 
 **It's not necessary for typescript projects because of Github's built-in support for typescript project. More details can be found in [this link](https://docs.github.com/en/code-security/dependabot/ecosystems-supported-by-dependabot/supported-ecosystems-and-repositories)**
@@ -119,7 +122,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  
+
 permissions:
   contents: read
 
@@ -138,7 +141,7 @@ jobs:
 
 ## Synk
 
-The adminstrator of the repository needs to create a Snyk account and generate an API token. 
+The adminstrator of the repository needs to create a Snyk account and generate an API token.
 
 You can get the API token from https://app.snyk.io/account.
 
@@ -155,7 +158,7 @@ name: Snyk Security
 
 on:
   push:
-    branches: ["main" ]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -185,10 +188,10 @@ jobs:
         env:
           # This is where you will need to introduce the Snyk API token created with your Snyk account
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      
+
       - name: Synk auth
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
-      
+
         # Runs Snyk Code (SAST) analysis and uploads result into GitHub.
         # Use || true to not fail the pipeline
       - name: Snyk Code test
